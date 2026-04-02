@@ -1,0 +1,29 @@
+# Eclipse IDE
+.project
+.classpath
+.settings/
+bin/
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+
+# Logs & Reports (generated at runtime)
+logs/
+reports/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+*.iml
+.idea/
+.vscode/
