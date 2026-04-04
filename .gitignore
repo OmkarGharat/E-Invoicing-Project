@@ -16,6 +16,7 @@ dependency-reduced-pom.xml
 # Logs & Reports (generated at runtime)
 logs/
 reports/
+test-output/
 *.log
 
 # OS files

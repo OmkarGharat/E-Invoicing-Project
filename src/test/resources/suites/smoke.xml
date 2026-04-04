@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Smoke Suite" verbose="1">
-    <test name="Smoke Tests">
+
+    <!-- Wire the Extent Report Listener — generates HTML report automatically -->
+    <listeners>
+        <listener class-name="listeners.ExtentReportListener"/>
+    </listeners>
+
+    <test name="Health Check Tests">
         <classes>
             <class name="testcases.HealthCheckTest"/>
-            <!-- Add 1-2 critical tests from each module -->
         </classes>
     </test>
+
 </suite>
