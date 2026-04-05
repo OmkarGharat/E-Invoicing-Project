@@ -18,10 +18,10 @@ public class TestBase {
 		
 		// The next lines trigger the ConfigReader's static block if they haven't run yet
         String env = ConfigReader.getEnvironment();
-        String uri = ConfigReader.get("baseURI");
+        String uri = ConfigReader.get("einvoice.baseURI");
 		
 		System.out.println("🌐 Active Environment:" + env);		
-	    System.out.println("🔗 BaseURI → " + uri);
+	    System.out.println("🔗 E-Invoice BaseURI → " + uri);
 
 	}
 }
