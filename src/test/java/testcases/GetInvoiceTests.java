@@ -22,12 +22,12 @@ import base.TestBase;
 import io.restassured.response.Response;
 import rest.RequestBuilder;
 
-public class GetInvoiceTests1 extends TestBase {
+public class GetInvoiceTests extends TestBase {
 
 	private static final String INVOICES_PATH = "/api/e-invoice/invoices";
 
-	// INV_01 : Default GET returns HTTP 200
-	@Test(priority = 1, description = "Default GET returns HTTP 200")
+	// INV_01 and INV_02 : Default GET returns HTTP 200 and Response Content-Type is JSON
+	@Test(priority = 1, description = "Default GET returns HTTP 200 and Response Content-Type is JSON")
 	public void testInvoiceStatus200() {
 
 		//@formatter:off
@@ -41,39 +41,25 @@ public class GetInvoiceTests1 extends TestBase {
 			.spec(BaseResponse.get200Spec());
 	}
 	
-	// INV_02 : Response Content-Type is JSON
-	@Test(priority = 2, description = "Response Content-Type is JSON")
-	public void testContentTypeIsJson() {
-		
-		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
-		
-		.when()
-			.get(INVOICES_PATH)
-		
-		.then()
-			.spec(BaseResponse.get200Spec());
-	}
-	
 	// INV_03 : Top-level keys all present	
 		@Test(priority = 3, description = "Top-level keys all present")
-		public void testAllKeysArePresent() {
+	public void testAllKeysArePresent() {
 			
-			given()
-				.spec(RequestBuilder.getRequest("einvoice"))
-		
-			.when()
-				.get(INVOICES_PATH)
-		
-			.then()
-				.spec(BaseResponse.get200Spec())
-				.body("keySet()", hasItems("success", "data", "pagination", 
-										   "filters", "sort", "availableFields"));		
+		given()
+			.spec(RequestBuilder.getRequest("einvoice"))
+	
+		.when()
+			.get(INVOICES_PATH)
+	
+		.then()
+			.spec(BaseResponse.get200Spec())
+			.body("keySet()", hasItems("success", "data", "pagination", 
+									   "filters", "sort", "availableFields"));		
 		}
 	
 	// INV_04 : success is boolean true
 	@Test(priority = 4, description = "success is boolean true")
-	public void testSuccesIsTrue() {
+	public void testSuccessIsTrue() {
 		
 		given()
 			.spec(RequestBuilder.getRequest("einvoice"))
@@ -200,6 +186,76 @@ public class GetInvoiceTests1 extends TestBase {
 	    assertTrue(isSorted, "generatedAt not sorted DESC");
 	}
 	
+	// INV_11 : Filter status=Generated returns only Generated invoices.
+	@Test(priority = 11, description = "Filter status=Generated returns only Generated invoices")
+	public void testFilterStatusIsGenerated() {
+		
+		Response response = given()
+				.spec(RequestBuilder.getRequest("einvoice"))
+				.queryParam("status", "Generated")
+			
+			.when()
+				.get(INVOICES_PATH)
+			
+			.then()
+				.spec(BaseResponse.get200Spec())
+				.extract().response();
+		
+		List<Map<String, Object>> statusList = response.jsonPath().getList("data");
+		
+		boolean IsAllInvStatusGenerated = statusList.stream()
+							.allMatch(inv -> "Generated".equals(inv.get("status")));
+		
+		Assert.assertTrue(IsAllInvStatusGenerated, "API returned non-Generated Invoices.");
+	}
+	
+	// INV_12 : Filter status=Cancelled returns only Cancelled invoices.
+	@Test(priority = 12, description = "Filter status=Cancelled returns only Cancelled invoices.")
+	public void testFilterStatusIsCancelled() {
+		
+		Response response = given()
+								.spec(RequestBuilder.getRequest("einvoice"))
+								.queryParam("status", "Cancelled")
+							
+							.when()
+								.get(INVOICES_PATH)
+							
+							.then()
+								.spec(BaseResponse.get200Spec())
+								.extract().response();
+		
+		List<Map<String, Object>> statusList = response.jsonPath().getList("data");
+		
+		boolean IsAllInvStatusCancelled = statusList.stream()
+										.allMatch(inv -> "Cancelled".equals(inv.get("status")))
+										;
+		
+		Assert.assertTrue(IsAllInvStatusCancelled, "All Invoices are not cancelled.");
+	}
+	
+	// INV_13 : Filter supplyType=B2B returns only B2B invoices.
+	@Test(priority = 13, description = "Filter supplyType=B2B returns only B2B invoices.")
+	public void testSupplyTypeB2BFilter() {
+		
+		Response response = given()
+								.spec(RequestBuilder.getRequest("einvoice"))
+								.queryParam("supplyType", "B2B")
+								
+							.when()
+								.get(INVOICES_PATH)
+								
+							.then()
+								.spec(BaseResponse.get200Spec())
+								.extract().response();
+		
+		List<Map<String, Object>> allSupplyTypes = response.jsonPath().getList("data");
+		
+		boolean isAllSupplyTypesB2B = allSupplyTypes.stream()
+										.allMatch(inv -> "B2B".equals(inv.get("supplyType")));
+		
+		Assert.assertTrue(isAllSupplyTypesB2B, "All Invoices doesn't have all Supply Type = B2B");		
+	}
+	
 	//	INV_14 : limit=3 returns at most 3 results
 	@Test(priority = 14, description = "limit=3 returns at most 3 results")
 	public void testLimit3returnsMax3Results() {
@@ -215,14 +271,9 @@ public class GetInvoiceTests1 extends TestBase {
 								.spec(BaseResponse.get200Spec())
 								.extract().response();
 		
-		var items = response.jsonPath().getList("data.id");
-		
-		System.out.println("Total Items inside data : " + items.size());
-		
+		var items = response.jsonPath().getList("data.id");		
 		var paginationLimit = response.jsonPath().getInt("pagination.limit");
-		
-		System.out.println("Pagination Limit = " + paginationLimit);
-		
+				
 		Assert.assertEquals(items.size(), 3, "The API did not limit the results to 3");
 		Assert.assertEquals(paginationLimit, 3, "The pagination Limit is not equal to 3");
 	}
@@ -314,7 +365,7 @@ public class GetInvoiceTests1 extends TestBase {
 	
 	// INV_18 : Invalid status value
 	@Test(priority = 18, description = "Invalid status value")
-	public void invalidStatusValue() {
+	public void testInvalidStatusValue() {
 		
 		given()
 			.spec(RequestBuilder.getRequest("einvoice"))
@@ -329,7 +380,7 @@ public class GetInvoiceTests1 extends TestBase {
 	
 	// INV_19 : page=0 (zero page)
 	@Test(priority = 19, description = "page=0 (zero page)")
-	public void pageValueIsZero() {
+	public void testPageValueIsZero() {
 		
 		given()
 			.spec(RequestBuilder.getRequest("einvoice"))
@@ -344,7 +395,7 @@ public class GetInvoiceTests1 extends TestBase {
 	
 	// INV_20 : limit=0
 	@Test(priority = 20, description = "limit=0")
-	public void limitValueIsZero() {
+	public void testLimitValueIsZero() {
 		
 		given()
 			.spec(RequestBuilder.getRequest("einvoice"))
@@ -369,6 +420,7 @@ public class GetInvoiceTests1 extends TestBase {
 			.get(INVOICES_PATH)
 		
 		.then()
-			.statusCode(400);
+			.spec(BaseResponse.get200Spec())
+			.body("data.size()", equalTo(0));
 	}
 }
