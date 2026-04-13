@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Log4j2 Configuration for E-Invoice API Test Framework
+    
+    Two Appenders:
+    1. Console  → INFO level, compact format (what you see in Eclipse)
+    2. File     → DEBUG level, detailed format with timestamps (for debugging)
+    
+    Log files go to: logs/test-run-<timestamp>.log
+    Each test run creates a fresh file. Old logs are preserved.
+-->
+<Configuration status="WARN">
+
+    <Properties>
+        <!-- Timestamp pattern used in the log file name -->
+        <Property name="LOG_DIR">logs</Property>
+        <Property name="LOG_FILE">${LOG_DIR}/test-run</Property>
+        
+        <!-- Console: compact, easy to scan in Eclipse -->
+        <Property name="CONSOLE_PATTERN">%d{HH:mm:ss} [%-5level] %c{1} - %msg%n</Property>
+        
+        <!-- File: full detail for post-run debugging -->
+        <Property name="FILE_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %-30c{1.} - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+    
+        <!-- Console Appender: Shows in Eclipse console -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${CONSOLE_PATTERN}" />
+        </Console>
+
+        <!-- Rolling File Appender: Creates a new log file each run -->
+        <RollingFile name="File"
+                     fileName="${LOG_FILE}.log"
+                     filePattern="${LOG_DIR}/test-run-%d{yyyy-MM-dd_HH-mm-ss}.log">
+            <PatternLayout pattern="${FILE_PATTERN}" />
+            <Policies>
+                <!-- Create a new file on each application startup (= each test run) -->
+                <OnStartupTriggeringPolicy />
+            </Policies>
+            <!-- Keep last 10 log files -->
+            <DefaultRolloverStrategy max="10" />
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+    
+        <!-- RestAssured request/response logs — DEBUG to file, INFO to console -->
+        <Logger name="restassured" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" level="INFO" />
+            <AppenderRef ref="File" level="DEBUG" />
+        </Logger>
+
+        <!-- Our framework classes — DEBUG to file, INFO to console -->
+        <Logger name="base" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" level="INFO" />
+            <AppenderRef ref="File" level="DEBUG" />
+        </Logger>
+
+        <Logger name="config" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" level="INFO" />
+            <AppenderRef ref="File" level="DEBUG" />
+        </Logger>
+
+        <Logger name="testcases" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" level="INFO" />
+            <AppenderRef ref="File" level="DEBUG" />
+        </Logger>
+
+        <Logger name="listeners" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" level="INFO" />
+            <AppenderRef ref="File" level="DEBUG" />
+        </Logger>
+
+        <!-- Root logger — catch-all -->
+        <Root level="INFO">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File" />
+        </Root>
+
+    </Loggers>
+
+</Configuration>

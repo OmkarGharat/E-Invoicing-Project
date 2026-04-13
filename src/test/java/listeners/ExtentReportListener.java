@@ -3,6 +3,8 @@ package listeners;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -30,6 +32,8 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
  */
 public class ExtentReportListener implements ITestListener {
 
+	private static final Logger logger = LogManager.getLogger(ExtentReportListener.class);
+	
 	private static ExtentReports extent;
 	private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
 	// ThreadLocal makes it safe for parallel test execution
@@ -59,7 +63,13 @@ public class ExtentReportListener implements ITestListener {
 		extent.setSystemInfo("Tester", "Omkar Gharat");
 		extent.setSystemInfo("Framework", "Rest Assured + TestNG");
 
-		System.out.println("📊 Extent Report initialized: " + reportPath);
+		logger.info("📊 Extent Report initialized: {}", reportPath);
+		
+		// Log which test suite/class is about to run
+		logger.info("════════════════════════════════════════════");
+		logger.info("  TEST SUITE: {}", context.getName());
+		logger.info("  Total tests to run: {}", context.getAllTestMethods().length);
+		logger.info("════════════════════════════════════════════");
 	}
 
 	// ───── EACH TEST STARTS ─────
@@ -76,7 +86,9 @@ public class ExtentReportListener implements ITestListener {
 		ExtentTest extentTest = extent.createTest(testName);
 		test.set(extentTest);
 
-		System.out.println("▶ STARTED: " + testName);
+		logger.info("────────────────────────────────────────────");
+		logger.info("▶ RUNNING: {} ({})", testName, result.getMethod().getMethodName());
+		logger.info("────────────────────────────────────────────");
 	}
 
 	// ───── TEST PASSED ─────
@@ -84,7 +96,8 @@ public class ExtentReportListener implements ITestListener {
 	public void onTestSuccess(ITestResult result) {
 
 		test.get().log(Status.PASS, "✅ Test PASSED: " + result.getMethod().getMethodName());
-		System.out.println("✅ PASSED: " + result.getMethod().getMethodName());
+		logger.info("✅ PASSED: {} ({}ms)", result.getMethod().getMethodName(), 
+				result.getEndMillis() - result.getStartMillis());
 	}
 
 	// ───── TEST FAILED ─────
@@ -97,7 +110,9 @@ public class ExtentReportListener implements ITestListener {
 		// Log the full stack trace so you can debug from the report itself
 		test.get().fail(result.getThrowable());
 
-		System.out.println("❌ FAILED: " + result.getMethod().getMethodName());
+		logger.error("❌ FAILED: {} ({}ms)", result.getMethod().getMethodName(),
+				result.getEndMillis() - result.getStartMillis());
+		logger.error("   Cause: {}", result.getThrowable().getMessage());
 	}
 
 	// ───── TEST SKIPPED ─────
@@ -110,7 +125,7 @@ public class ExtentReportListener implements ITestListener {
 			test.get().skip(result.getThrowable());
 		}
 
-		System.out.println("⏭ SKIPPED: " + result.getMethod().getMethodName());
+		logger.warn("⏭ SKIPPED: {}", result.getMethod().getMethodName());
 	}
 
 	// ───── SUITE ENDS ─────
@@ -119,6 +134,14 @@ public class ExtentReportListener implements ITestListener {
 
 		// Write everything to the HTML file
 		extent.flush();
-		System.out.println("📊 Extent Report generated successfully!");
+		
+		logger.info("════════════════════════════════════════════");
+		logger.info("  TEST SUITE COMPLETE: {}", context.getName());
+		logger.info("  Passed: {} | Failed: {} | Skipped: {}", 
+				context.getPassedTests().size(),
+				context.getFailedTests().size(),
+				context.getSkippedTests().size());
+		logger.info("📊 Extent Report generated successfully!");
+		logger.info("════════════════════════════════════════════");
 	}
 }

@@ -3,8 +3,12 @@ package config;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ConfigReader {
 
+	private static final Logger logger = LogManager.getLogger(ConfigReader.class);
 	private static Properties properties = new Properties();
 
 	// Loads config.properties
@@ -24,7 +28,7 @@ public class ConfigReader {
         
         // Store final env back for utility
         properties.setProperty("active.env", env);
-        System.out.println("🌐 Environment Loaded: " + env.toUpperCase());
+        logger.info("🌐 Environment Loaded: {}", env.toUpperCase());
         
     } catch (Exception e) {
         
@@ -38,10 +42,11 @@ public class ConfigReader {
             
         	if (input != null) {
                 properties.load(input);
+                logger.debug("Loaded properties file: {}", fileName);
             
         	} else {
             
-        		System.out.println("⚠️ File not found: " + fileName);
+        		logger.warn("⚠️ Properties file not found: {}", fileName);
             }
         }
     }
