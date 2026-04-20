@@ -18,6 +18,12 @@ public class Pagination {
     @JsonProperty("pages")
 	private Integer pages;
     
+    @JsonProperty("hasNext")
+    private Boolean hasNextPage; // only in /invoices → wrapper (nullable)
+    
+    @JsonProperty("hasPrev")
+    private Boolean hasPrevPage; // only in /invoices → wrapper (nullable)
+    
     public Pagination() {}
 
 	public Integer getCurrentPageNo() {
@@ -50,6 +56,22 @@ public class Pagination {
 
 	public void setPages(Integer pages) {
 		this.pages = pages;
+	}
+
+	public Boolean getHasNextPage() {
+		return hasNextPage;
+	}
+
+	public void setHasNextPage(Boolean hasNextPage) {
+		this.hasNextPage = hasNextPage;
+	}
+
+	public Boolean getHasPrevPage() {
+		return hasPrevPage;
+	}
+
+	public void setHasPrevPage(Boolean hasPrevPage) {
+		this.hasPrevPage = hasPrevPage;
 	}
 	
 }
