@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Sample extends BaseInvoice{
+public class Sample extends BaseInvoice {
 	
 	// NOTE This is Invoice Response
 	// Default constructor + getters + setters (only for the 3 fields above)
