@@ -48,12 +48,15 @@ public class BaseRequest {
 	}
 
 	// PART 2: The static access method (the only way to get the object)
-	public static RequestSpecification getRequestSpecification(String serviceName) {
+	public static RequestSpecification getRequestSpecification() {
 
-		String baseURI = ConfigReader.get(serviceName + ".baseURI");
-		String authType = ConfigReader.get(serviceName + ".authType").toUpperCase();
+		String baseURI = ConfigReader.get("baseURI");
+		String authType = ConfigReader.get("authType").toUpperCase();
 
-		logger.info("Building request for service: {} | baseURI: {}", serviceName, baseURI);
+//		String baseURI = ConfigReader.get(serviceName + ".baseURI");
+//		String authType = ConfigReader.get(serviceName + ".authType").toUpperCase();
+
+		logger.info("Building request for service: {} | baseURI: {}",baseURI);
 
 		// @formatter:off
 	    RequestSpecBuilder builder = new RequestSpecBuilder()
@@ -70,11 +73,11 @@ public class BaseRequest {
 	    switch(authType) {
 	    
 	    case "APIKEY":
-	        builder.addHeader("x-api-key", ConfigReader.get(serviceName + ".apikey"));
+	        builder.addHeader("x-api-key", ConfigReader.get("apikey"));
 	        break;
 	    
 	    case "BEARER" : 
-	    		builder.addHeader("Authorization", "Bearer" + " " + ConfigReader.get(serviceName + ".token"));
+	    		builder.addHeader("Authorization", "Bearer" + " " + ConfigReader.get("token"));
 	    		break;
 	    		
 	    case "BASIC":

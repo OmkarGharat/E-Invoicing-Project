@@ -6,43 +6,43 @@ import io.restassured.specification.RequestSpecification;
 public class RequestBuilder {
 
 	// CREATE USER
-	public static RequestSpecification createRequest(String serviceName, Object body) {
+	public static RequestSpecification createRequest(Object body) {
 
 		// @formatter:off
 		return BaseRequest
-				.getRequestSpecification(serviceName)
+				.getRequestSpecification()
 				.body(body);
 	}
 	
 	// TODO DO THE SAME AS ABOVE FOR ALL FOLLOWING METHODS
 	
     // UPDATE USER (PUT)
-	public static RequestSpecification updateRequest(String serviceName, Object body) {
+	public static RequestSpecification updateRequest(Object body) {
 		
 		return BaseRequest
-				.getRequestSpecification(serviceName)
+				.getRequestSpecification()
 				.body(body);		
 	}
 	
     // PATCH USER (Partial Update)
-	public static RequestSpecification patchRequest(String serviceName, Object body) {
+	public static RequestSpecification patchRequest(Object body) {
 
 	        return BaseRequest
-	                .getRequestSpecification(serviceName)
+	                .getRequestSpecification()
 	                .body(body);
 	}
 	
 	// DELETE USER (No body)
-    public static RequestSpecification deleteRequest(String serviceName) {
+    public static RequestSpecification deleteRequest() {
 
         return BaseRequest
-                .getRequestSpecification(serviceName);
+                .getRequestSpecification();
     }
 
     // GET USER (No body)
-    public static RequestSpecification getRequest(String serviceName) {
+    public static RequestSpecification getRequest() {
 
         return BaseRequest
-                .getRequestSpecification(serviceName);
+                .getRequestSpecification();
     }
 }
