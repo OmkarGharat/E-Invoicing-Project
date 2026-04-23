@@ -1,6 +1,6 @@
 package pojo;
 
-public class SamplesResponse {
+public class SamplesResponse extends ApiResponse<Sample> {
 
 	// NOTE This is Samples Response
 

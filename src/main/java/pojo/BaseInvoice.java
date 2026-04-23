@@ -13,17 +13,17 @@ public class BaseInvoice {
     
     private String documentType;
     
-    private int totalValue;
+    private Integer totalValue;
     
     private String sellerState;
     
     private String buyerState;
     
-    private boolean isInterstate;
+    private Boolean isInterstate;
     
-    private boolean reverseCharge;
+    private Boolean reverseCharge;
     
-    private int itemCount;
+    private Integer itemCount;
 
 	public int getId() {
 		return id;
@@ -57,11 +57,11 @@ public class BaseInvoice {
 		this.documentType = documentType;
 	}
 
-	public int getTotalValue() {
+	public Integer getTotalValue() {
 		return totalValue;
 	}
 
-	public void setTotalValue(int totalValue) {
+	public void setTotalValue(Integer totalValue) {
 		this.totalValue = totalValue;
 	}
 
@@ -81,27 +81,27 @@ public class BaseInvoice {
 		this.buyerState = buyerState;
 	}
 
-	public boolean isInterstate() {
+	public Boolean isInterstate() {
 		return isInterstate;
 	}
 
-	public void setInterstate(boolean isInterstate) {
+	public void setInterstate(Boolean isInterstate) {
 		this.isInterstate = isInterstate;
 	}
 
-	public boolean isReverseCharge() {
+	public Boolean isReverseCharge() {
 		return reverseCharge;
 	}
 
-	public void setReverseCharge(boolean reverseCharge) {
+	public void setReverseCharge(Boolean reverseCharge) {
 		this.reverseCharge = reverseCharge;
 	}
 
-	public int getItemCount() {
+	public Integer getItemCount() {
 		return itemCount;
 	}
 
-	public void setItemCount(int itemCount) {
+	public void setItemCount(Integer itemCount) {
 		this.itemCount = itemCount;
 	} 
 
