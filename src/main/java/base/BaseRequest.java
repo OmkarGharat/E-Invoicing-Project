@@ -56,7 +56,7 @@ public class BaseRequest {
 //		String baseURI = ConfigReader.get(serviceName + ".baseURI");
 //		String authType = ConfigReader.get(serviceName + ".authType").toUpperCase();
 
-		logger.info("Building request for service: {} | baseURI: {}",baseURI);
+		logger.info("Building request spec | baseURI: {}", baseURI);
 
 		// @formatter:off
 	    RequestSpecBuilder builder = new RequestSpecBuilder()

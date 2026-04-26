@@ -1,6 +1,7 @@
 package pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseInvoice {
@@ -15,10 +16,14 @@ public class BaseInvoice {
     
     private Integer totalValue;
     
+    @JsonProperty("pos")
+    private String pos;
+    
     private String sellerState;
     
     private String buyerState;
     
+    @JsonProperty("isInterstate")
     private Boolean isInterstate;
     
     private Boolean reverseCharge;
@@ -65,6 +70,15 @@ public class BaseInvoice {
 		this.totalValue = totalValue;
 	}
 
+	public String getPlaceOfSupply() {
+		return pos;
+	}
+
+	public void setPos(String pos) {
+		this.pos = pos;
+	}
+
+
 	public String getSellerState() {
 		return sellerState;
 	}
@@ -88,8 +102,8 @@ public class BaseInvoice {
 	public void setInterstate(Boolean isInterstate) {
 		this.isInterstate = isInterstate;
 	}
-
-	public Boolean isReverseCharge() {
+	
+	public Boolean getReverseCharge() {
 		return reverseCharge;
 	}
 
