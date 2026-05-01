@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 
 public class StateCodeUtils {
 	
-	// Interstate means buyerState != sellerState
-	// Intrastate means buyerState == sellerState
+	// Interstate means pos != sellerState
+	// Intrastate means pos == sellerState
 
     private static final Logger log = LoggerFactory.getLogger(StateCodeUtils.class);
 
@@ -44,7 +44,7 @@ public class StateCodeUtils {
             Integer buyerCode = Integer.parseInt(buyer);
             Integer sellerCode = Integer.parseInt(seller);
 
-            return !buyerCode.equals(sellerCode);
+            return !buyerCode.equals(sellerCode); // ← returns true when they DON'T match
 
         } catch (NumberFormatException e) {
             log.error("Invalid state code format: buyer={}, seller={}, Must be numeric.", buyer, seller, e);

@@ -11,13 +11,13 @@ public class Sample extends BaseInvoice {
     // The 10 shared fields are INHERITED from BaseInvoice — no duplication!
 	
     @JsonProperty("type")
-	public String supplyType;
+	private String supplyType;
 	
     @JsonProperty("description")
-	public String description;
+	private String description;
 		
     @JsonProperty("endpoint")
-	public String endpoint;
+    private String endpoint;
 
 	public String getSupplyType() {
 		return supplyType;

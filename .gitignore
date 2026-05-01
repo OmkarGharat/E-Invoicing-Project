@@ -30,3 +30,6 @@ desktop.ini
 *.iml
 .idea/
 .vscode/
+src/test/java/testcases/UserCRUDTest.java
+src/test/java/testcases/APIChainTestUsingFaker.java
+src/test/java/testcases/APINestedChainTest.java

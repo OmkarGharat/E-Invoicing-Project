@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ApiResponse<T> {
 	
-	public boolean success;
+	private Boolean success;
 	
 	private List<T> data;
 	

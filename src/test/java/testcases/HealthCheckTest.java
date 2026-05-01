@@ -23,7 +23,7 @@ public class HealthCheckTest extends TestBase {
 
 		//@formatter:off
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 		
 		.when()
 			.get("/health")
@@ -37,7 +37,7 @@ public class HealthCheckTest extends TestBase {
 	public void testHealthResponseHasStatusOK() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 			
 		.when()
 			.get("/health")
@@ -52,14 +52,13 @@ public class HealthCheckTest extends TestBase {
 	public void testPostToHealthMethodNotAllowed() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 		
 		.when()
 			.get("/health")
 		
 		.then()
-			.statusCode(405);
-		
+			.statusCode(405);		
 	}
 	
 	// HC_06_a: Timestamp is not null or empty
@@ -67,7 +66,7 @@ public class HealthCheckTest extends TestBase {
 	public void testHealthTimeIsNotNullOrEmpty() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 		
 		.when()
 			.get("/health")
@@ -83,7 +82,7 @@ public class HealthCheckTest extends TestBase {
 	public void testTimeStampValidFormat() {
 		
 		Response response = given()
-								.spec(RequestBuilder.getRequest("einvoice"))
+								.spec(RequestBuilder.getRequest())
 			
 							.when()
 								.get("/health")

@@ -26,13 +26,14 @@ public class GetInvoiceTests extends TestBase {
 
 	private static final String INVOICES_PATH = "/api/e-invoice/invoices";
 
-	// INV_01 and INV_02 : Default GET returns HTTP 200 and Response Content-Type is JSON
+	// INV_01 and INV_02 : Default GET returns HTTP 200 and Response Content-Type is
+	// JSON
 	@Test(priority = 1, description = "Default GET returns HTTP 200 and Response Content-Type is JSON")
 	public void testInvoiceStatus200() {
 
 		//@formatter:off
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 		
 		.when()
 			.get(INVOICES_PATH)
@@ -46,7 +47,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testAllKeysArePresent() {
 			
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 	
 		.when()
 			.get(INVOICES_PATH)
@@ -62,7 +63,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testSuccessIsTrue() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 		
 		.when()
 			.get(INVOICES_PATH)
@@ -77,7 +78,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testDataIsAList() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 		
 		.when()
 			.get(INVOICES_PATH)
@@ -94,7 +95,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testAllDataFieldsArePresent() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 			
 		.when()
 			.get(INVOICES_PATH)
@@ -115,7 +116,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testAllPaginationFieldsArePresent() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 		
 		.when()
 			.get(INVOICES_PATH)
@@ -131,7 +132,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testAllSortHasAllFields() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 			
 		.when()
 			.get(INVOICES_PATH)
@@ -146,7 +147,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testSortIsGeneratedByDesc() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 		
 		.when()
 			.get(INVOICES_PATH)
@@ -165,7 +166,7 @@ public class GetInvoiceTests extends TestBase {
 		
 		Response response = 
 				given()
-				.spec(RequestBuilder.getRequest("einvoice"))
+				.spec(RequestBuilder.getRequest())
 			
 			.when()
 				.get(INVOICES_PATH)
@@ -191,7 +192,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testFilterStatusIsGenerated() {
 		
 		Response response = given()
-				.spec(RequestBuilder.getRequest("einvoice"))
+				.spec(RequestBuilder.getRequest())
 				.queryParam("status", "Generated")
 			
 			.when()
@@ -214,7 +215,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testFilterStatusIsCancelled() {
 		
 		Response response = given()
-								.spec(RequestBuilder.getRequest("einvoice"))
+								.spec(RequestBuilder.getRequest())
 								.queryParam("status", "Cancelled")
 							
 							.when()
@@ -238,7 +239,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testSupplyTypeB2BFilter() {
 		
 		Response response = given()
-								.spec(RequestBuilder.getRequest("einvoice"))
+								.spec(RequestBuilder.getRequest())
 								.queryParam("supplyType", "B2B")
 								
 							.when()
@@ -261,7 +262,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testLimit3returnsMax3Results() {
 	
 		Response response = given()
-								.spec(RequestBuilder.getRequest("einvoice"))
+								.spec(RequestBuilder.getRequest())
 								.queryParam("limit", 3)
 							
 							.when()
@@ -285,7 +286,7 @@ public class GetInvoiceTests extends TestBase {
 		// TODO : What do you mean by Correct Page State ??
 		
 		Response response = given()
-								.spec(RequestBuilder.getRequest("einvoice"))
+								.spec(RequestBuilder.getRequest())
 								.queryParam("page", 2)
 								.queryParam("limit", 3)
 							
@@ -308,7 +309,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testHasNext() {
 		
 		Response response = given()
-								.spec(RequestBuilder.getRequest("einvoice"))
+								.spec(RequestBuilder.getRequest())
 			
 							.when()
 								.get(INVOICES_PATH)
@@ -332,7 +333,7 @@ public class GetInvoiceTests extends TestBase {
 		parameters.put("supplyType", "B2B");
 		
 		Response response = given()
-								.spec(RequestBuilder.getRequest("einvoice"))
+								.spec(RequestBuilder.getRequest())
 								.queryParams(parameters)
 								
 							.when()
@@ -368,7 +369,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testInvalidStatusValue() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 			.queryParam("status", "BLAH")
 			
 		.when()
@@ -383,7 +384,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testPageValueIsZero() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 			.queryParam("page", "0")
 			
 		.when()
@@ -398,7 +399,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testLimitValueIsZero() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 			.queryParam("limit", "0")
 			
 		.when()
@@ -413,7 +414,7 @@ public class GetInvoiceTests extends TestBase {
 	public void testLastPageValue() {
 		
 		given()
-			.spec(RequestBuilder.getRequest("einvoice"))
+			.spec(RequestBuilder.getRequest())
 			.queryParam("page", "999")
 			
 		.when()
