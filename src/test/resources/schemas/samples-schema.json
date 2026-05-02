@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Samples Endpoint Schema",
+  "type": "object",
+  "required": [
+    "success",
+    "data",
+    "count",
+    "total",
+    "filters",
+    "pagination",
+    "sort"
+  ],
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "description",
+          "invoiceNo",
+          "totalValue",
+          "documentType",
+          "sellerState",
+          "buyerState",
+          "isInterstate",
+          "reverseCharge",
+          "itemCount",
+          "invoiceDate",
+          "endpoint"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "B2B",
+              "SEZWP",
+              "SEZWOP",
+              "EXPWP",
+              "EXPWOP",
+              "DEXP"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "invoiceNo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "totalValue": {
+            "type": [
+              "number",
+              "integer"
+            ]
+          },
+          "documentType": {
+            "type": "string",
+            "enum": [
+              "INV",
+              "CRN",
+              "DBN"
+            ]
+          },
+          "sellerState": {
+            "type": "string"
+          },
+          "buyerState": {
+            "type": "string"
+          },
+          "isInterstate": {
+            "type": "boolean"
+          },
+          "reverseCharge": {
+            "type": "boolean"
+          },
+          "itemCount": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "invoiceDate": {
+            "type": "string"
+          },
+          "endpoint": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "total": {
+      "type": "integer"
+    },
+    "filters": {
+      "type": "object"
+    },
+    "pagination": {
+      "type": "object",
+      "required": [
+        "page",
+        "limit",
+        "total",
+        "pages"
+      ],
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pages": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "sort": {
+      "type": "object"
+    }
+  }
+}
