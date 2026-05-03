@@ -5,6 +5,10 @@ import java.util.UUID;
 
 import com.github.javafaker.Faker;
 
+/**
+ * This class is used for generating random data for E-Invoicing testing
+ * using the Java Faker library.
+ */
 public class TestData {
 
 	private static final Faker faker = new Faker();

@@ -5,7 +5,7 @@ import io.restassured.specification.RequestSpecification;
 
 public class RequestBuilder {
 
-	// CREATE USER
+	// POST Request
 	public static RequestSpecification createRequest(Object body) {
 
 		// @formatter:off
@@ -16,7 +16,7 @@ public class RequestBuilder {
 	
 	// TODO DO THE SAME AS ABOVE FOR ALL FOLLOWING METHODS
 	
-    // UPDATE USER (PUT)
+    // PUT Request (Update)
 	public static RequestSpecification updateRequest(Object body) {
 		
 		return BaseRequest
@@ -24,7 +24,7 @@ public class RequestBuilder {
 				.body(body);		
 	}
 	
-    // PATCH USER (Partial Update)
+    // PATCH Request (Partial Update)
 	public static RequestSpecification patchRequest(Object body) {
 
 	        return BaseRequest
@@ -32,14 +32,14 @@ public class RequestBuilder {
 	                .body(body);
 	}
 	
-	// DELETE USER (No body)
+	// DELETE Request
     public static RequestSpecification deleteRequest() {
 
         return BaseRequest
                 .getRequestSpecification();
     }
 
-    // GET USER (No body)
+    // GET Request
     public static RequestSpecification getRequest() {
 
         return BaseRequest
