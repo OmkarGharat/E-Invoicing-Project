@@ -5,19 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Sample extends BaseInvoice {
-	
-	// NOTE This is Invoice Response
+
+	// NOTE This is Samples Response
 	// Default constructor + getters + setters (only for the 3 fields above)
-    // The 10 shared fields are INHERITED from BaseInvoice — no duplication!
-	
-    @JsonProperty("type")
+	// The 10 shared fields are INHERITED from BaseInvoice — no duplication!
+
+	@JsonProperty("type")
 	private String supplyType;
-	
-    @JsonProperty("description")
+
+	@JsonProperty("description")
 	private String description;
-		
-    @JsonProperty("endpoint")
-    private String endpoint;
+
+	@JsonProperty("endpoint")
+	private String endpoint;
 
 	public String getSupplyType() {
 		return supplyType;
