@@ -9,6 +9,8 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+import utils.ApiLogCapture;
+
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -83,11 +85,15 @@ public class ExtentReportListener implements ITestListener {
 			testName = result.getMethod().getMethodName();
 		}
 
+		// Clear the API log buffer so this test starts with a fresh capture
+		ApiLogCapture.clearLog();
+
 		ExtentTest extentTest = extent.createTest(testName);
 		test.set(extentTest);
 
+		String className = result.getTestClass().getRealClass().getSimpleName();
 		logger.info("────────────────────────────────────────────");
-		logger.info("▶ RUNNING: {} ({})", testName, result.getMethod().getMethodName());
+		logger.info("▶ RUNNING: [{}] {}", className, testName);
 		logger.info("────────────────────────────────────────────");
 	}
 
@@ -106,13 +112,20 @@ public class ExtentReportListener implements ITestListener {
 
 		test.get().log(Status.FAIL, "❌ Test FAILED: " + result.getMethod().getMethodName());
 		test.get().log(Status.FAIL, "Cause: " + result.getThrowable().getMessage());
-
-		// Log the full stack trace so you can debug from the report itself
 		test.get().fail(result.getThrowable());
 
-		logger.error("❌ FAILED: {} ({}ms)", result.getMethod().getMethodName(),
+		String className = result.getTestClass().getRealClass().getSimpleName();
+		logger.error("❌ FAILED: [{}] {} ({}ms)",
+				className,
+				result.getMethod().getMethodName(),
 				result.getEndMillis() - result.getStartMillis());
 		logger.error("   Cause: {}", result.getThrowable().getMessage());
+
+		// Print the captured API details — request + response — only on failure
+		String apiLog = ApiLogCapture.getLog();
+		if (apiLog != null && !apiLog.isBlank()) {
+			logger.error("   API Call Details:{}", apiLog);
+		}
 	}
 
 	// ───── TEST SKIPPED ─────
