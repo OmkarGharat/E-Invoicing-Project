@@ -36,7 +36,7 @@ public class Item {
 	public Double assessibleAmount;
 
 	@JsonProperty("GstRt")
-	public String gstRate;
+	public Double gstRate;
 
 	@JsonProperty("IgstAmt")
 	public Double igstAmount;
@@ -122,11 +122,11 @@ public class Item {
 		this.assessibleAmount = assessibleAmount;
 	}
 
-	public String getGstRate() {
+	public Double getGstRate() {
 		return gstRate;
 	}
 
-	public void setGstRate(String gstRate) {
+	public void setGstRate(Double gstRate) {
 		this.gstRate = gstRate;
 	}
 

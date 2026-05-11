@@ -7,57 +7,57 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ValueDetails {
 
 	@JsonProperty("AssVal")
-	public String assessibleValue;
+	public Double assessibleValue;
 
 	@JsonProperty("CgstVal")
-	public String cgstValue;
+	public Double cgstValue;
 
 	@JsonProperty("SgstVal")
-	public String sgstValue;
+	public Double sgstValue;
 
 	@JsonProperty("IgstVal")
-	public String igstValue;
+	public Double igstValue;
 
 	@JsonProperty("TotInvVal")
-	public String totalInvoiceValue;
+	public Double totalInvoiceValue;
 
-	public String getAssessibleValue() {
+	public Double getAssessibleValue() {
 		return assessibleValue;
 	}
 
-	public void setAssessibleValue(String assessibleValue) {
+	public void setAssessibleValue(Double assessibleValue) {
 		this.assessibleValue = assessibleValue;
 	}
 
-	public String getCgstValue() {
+	public Double getCgstValue() {
 		return cgstValue;
 	}
 
-	public void setCgstValue(String cgstValue) {
+	public void setCgstValue(Double cgstValue) {
 		this.cgstValue = cgstValue;
 	}
 
-	public String getSgstValue() {
+	public Double getSgstValue() {
 		return sgstValue;
 	}
 
-	public void setSgstValue(String sgstValue) {
+	public void setSgstValue(Double sgstValue) {
 		this.sgstValue = sgstValue;
 	}
 
-	public String getIgstValue() {
+	public Double getIgstValue() {
 		return igstValue;
 	}
 
-	public void setIgstValue(String igstValue) {
+	public void setIgstValue(Double igstValue) {
 		this.igstValue = igstValue;
 	}
 
-	public String getTotalInvoiceValue() {
+	public Double getTotalInvoiceValue() {
 		return totalInvoiceValue;
 	}
 
-	public void setTotalInvoiceValue(String totalInvoiceValue) {
+	public void setTotalInvoiceValue(Double totalInvoiceValue) {
 		this.totalInvoiceValue = totalInvoiceValue;
 	}
 
