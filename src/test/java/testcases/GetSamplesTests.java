@@ -3,7 +3,6 @@ package testcases;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.io.File;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.*;
 import static org.hamcrest.Matchers.*;
@@ -383,15 +382,15 @@ public class GetSamplesTests {
 			.body("pagination.pages", greaterThanOrEqualTo(0));		
 	}
 	
-		@DataProvider(name = "unsupportedMethods")
-		public Object[][] unsupportedMethods(){
+	@DataProvider(name = "unsupportedMethods")
+	public Object[][] unsupportedMethods(){
+		
+		return new Object[][] {
 			
-			return new Object[][] {
-				
-				{"POST"}, {"PUT"}, {"DELETE"}, {"PATCH"}
-				
-			};
-		}
+			{"POST"}, {"PUT"}, {"DELETE"}, {"PATCH"}
+			
+		};
+	}
 	
 	@Test(
 			priority = 21, 

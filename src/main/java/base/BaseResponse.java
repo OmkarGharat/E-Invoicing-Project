@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.filter.log.LogDetail;
+
 import io.restassured.specification.ResponseSpecification;
 
 public class BaseResponse {
@@ -25,9 +25,6 @@ public class BaseResponse {
 			responseSpec200 = new ResponseSpecBuilder()
 								.expectStatusCode(200)
 								.expectHeader("Content-Type", "application/json; charset=utf-8")
-								// Log full response body ONLY when a validation fails
-								// This keeps logs clean on success but gives you the full picture on failure
-								.log(LogDetail.ALL)
 								.build();
 		}
 		return responseSpec200;
@@ -43,7 +40,6 @@ public class BaseResponse {
 			responseSpec201 = new ResponseSpecBuilder()
 								.expectStatusCode(201)
 								.expectHeader("Content-Type", "application/json; charset=utf-8")
-								.log(LogDetail.ALL)
 								.build();
 		}
 		return responseSpec201;

@@ -75,6 +75,12 @@
             <AppenderRef ref="File" level="DEBUG" />
         </Logger>
 
+        <!-- Suppress TestNG's noisy internal logging (MethodGroupsHelper, etc.) -->
+        <Logger name="org.testng" level="WARN" additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File" />
+        </Logger>
+
         <!-- Root logger — catch-all -->
         <Root level="INFO">
             <AppenderRef ref="Console" />

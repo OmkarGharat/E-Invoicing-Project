@@ -165,7 +165,7 @@ public class GetOneSampleTest {
 	public void testUnsupportedMethodsReturns405(String method) {
 		
 		given()
-		.spec(RequestBuilder.getRequest())
+			.spec(RequestBuilder.getRequest())
 		
 		.when()
 			.request(method, SAMPLE_PATH)

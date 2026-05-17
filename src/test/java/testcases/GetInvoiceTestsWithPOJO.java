@@ -438,4 +438,12 @@ public class GetInvoiceTestsWithPOJO extends TestBase {
 			.spec(BaseResponse.get200Spec())
 			.body("data.size()", equalTo(0));
 	}
+
+	// INV_22 : GET /invoices?irn=... returns only that invoice
+	@Test(priority = 22, description = "GET /invoices?irn=... returns only that invoice")
+	public void testIRNReturnsOnlyThatInvoice(){
+
+		
+
+	}
 }

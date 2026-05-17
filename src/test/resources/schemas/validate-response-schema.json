@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "required": [
+    "success",
+    "isValid",
+    "message"
+  ],
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "isValid": {
+      "type": "boolean"
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
