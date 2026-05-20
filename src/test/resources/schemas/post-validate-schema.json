@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "POST /validate Success Response",
+  "type": "object",
+  "required": ["success", "isValid", "message"],
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "const": true
+    },
+    "isValid": {
+      "type": "boolean",
+      "const": true
+    },
+    "message": {
+      "type": "string",
+      "const": "E-Invoice data is valid"
+    }
+  },
+  "additionalProperties": false
+}

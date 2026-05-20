@@ -52,4 +52,18 @@ public class BaseRequest {
 	    logger.debug("Request spec built successfully with authType: {}", authType);
 	    return builder.build();
 	}
+	
+	public static RequestSpecification getUnauthenticatedSpec() {
+		
+		String baseURI = ConfigReader.get("baseURI");
+		
+		return new RequestSpecBuilder()
+				.setBaseUri(baseURI)
+				.setContentType("application/json")
+				.addHeader("Accept", "application/json")
+				.addFilter(new ApiLogCapture())
+				.build();
+	}
+	
+	
 }

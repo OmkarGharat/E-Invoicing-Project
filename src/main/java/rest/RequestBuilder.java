@@ -14,6 +14,13 @@ public class RequestBuilder {
 				.body(body);
 	}
 	
+	public static RequestSpecification createUnauthenticatedRequest(Object body) {
+		
+        return BaseRequest
+                .getUnauthenticatedSpec()
+                .body(body);
+	}
+	
 	// TODO DO THE SAME AS ABOVE FOR ALL FOLLOWING METHODS
 	
     // PUT Request (Update)
