@@ -2,6 +2,7 @@ package testcases;
 
 import static io.restassured.RestAssured.*;
 
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -33,6 +34,7 @@ import pojo.EInvoicePayload;
 import pojo.SamplesResponse;
 import rest.RequestBuilder;
 import utils.ApiClient;
+import utils.StateCodeUtils;
 
 public class PostValidateTest extends TestBase {
 
@@ -323,6 +325,156 @@ public class PostValidateTest extends TestBase {
 		
 		ApiClient.negativePostRequest(VALIDATE_PATH, validBody, 400);
 	}
+	
+	@Test(priority = 10, description = "Tax consistency: IGST > 0 but same state → fail")
+	public void testTaxConsistencyWithIGST() {
+		
+		Map<String, Object> validBody = freshBody();
+		
+		 int MAHARASHTRA = 27;
+		 String buyerGSTIN = "27AWGPV7107B1Z1";
+		 String sellerGSTIN = "27AAACB2902M1ZT";
+		 
+		 Map<String, Object> sellerDetails = (Map<String, Object>) validBody.get("SellerDtls");
+		 sellerDetails.put("Gstin", buyerGSTIN);
+		 sellerDetails.put("Stcd", MAHARASHTRA);
+		 
+		 Map<String, Object> buyerDetails = (Map<String, Object>) validBody.get("BuyerDtls");
+		 buyerDetails.put("Gstin", sellerGSTIN);
+		 buyerDetails.put("Stcd", MAHARASHTRA);
+		 
+		 Map<String, Object> valueDetails = (Map<String, Object>) validBody.get("ValDtls");
+		 valueDetails.put("CgstVal", 0);
+		 valueDetails.put("CgstVal", 0);
+		 valueDetails.put("IgstVal", 67500);
+		 
+		 ApiClient.negativePostRequest(VALIDATE_PATH, validBody, 400);
+		
+	}
+	
+	@Test(
+			priority = 11, 
+			description = "Tax consistency: CGST/SGST but different states → fail"
+		 )
+	public void testTaxConsistencyWithCGSTAndSGST() {
+		
+		Map<String, Object> validBody = freshBody();
+		
+		 int MAHARASHTRA = 27;
+		 int KARNATAKA = 29;
+		 String buyerGSTIN = "27AWGPV7107B1Z1";
+		 String sellerGSTIN = "29AAAGM0289C1ZF";
+		 
+		 Map<String, Object> sellerDetails = (Map<String, Object>) validBody.get("SellerDtls");
+		 sellerDetails.put("Gstin", buyerGSTIN);
+		 sellerDetails.put("Stcd", MAHARASHTRA);
+		 
+		 Map<String, Object> buyerDetails = (Map<String, Object>) validBody.get("BuyerDtls");
+		 buyerDetails.put("Gstin", sellerGSTIN);
+		 buyerDetails.put("Stcd", KARNATAKA);
+		 
+		 Map<String, Object> valueDetails = (Map<String, Object>) validBody.get("ValDtls");
+		 valueDetails.put("CgstVal", 33750);
+		 valueDetails.put("CgstVal", 33750);
+		 valueDetails.put("IgstVal", 0);
+		 
+		 ApiClient.negativePostRequest(VALIDATE_PATH, validBody, 400);
+	}
+	
+	@Test(
+			priority = 12, 
+			description = "Missing required section (no ItemList) → 400"
+		 )
+	public void testMissingRequiredFieldItemList() {
+		
+		Map<String, Object> invalidBody = freshBody();
+		invalidBody.remove("ItemList");
+		
+		ApiClient.negativePostRequest(VALIDATE_PATH, invalidBody, 400);
+	}
+	
+	@Test(	
+			priority = 13, 
+			description = "Pin-State mismatch → fail"
+		 )
+	public void testPinStateMismatch() {
+		
+		Map<String, Object> validBody = freshBody();
+		
+		 int KARNATAKA = 29;
+		 String sellerGSTIN = "29AAAGM0289C1ZF";
+		
+		Map<String, Object> sellerDetails = (Map<String, Object>) validBody.get("SellerDtls");
+		sellerDetails.put("Gstin", sellerGSTIN);
+		sellerDetails.put("Stcd", KARNATAKA);
+		
+		Assert.assertEquals(
+							 sellerGSTIN.substring(0, 2), 
+							 KARNATAKA, 
+							 "Pincode and StateCode doesn't match with each other."
+						   );
+	}
+	
+	@Test(
+			priority = 14, 
+			description = "State code invalid (100) → fail"
+		 )
+	public void testInvalidStateCode() {
+		
+		Map<String, Object> invalidBody = freshBody();
+		
+		// State code invalid (100) → fail
+		final String invalidStateCode = "100";
+		
+		Map<String, Object> sellerDetails = (Map<String, Object>) invalidBody.get("SellerDtls");
+		sellerDetails.put("Stcd", invalidStateCode);
+		
+		ApiClient.negativePostRequest(VALIDATE_PATH, invalidBody, 400);	
+	}
+	
+	@Test(
+			priority = 15, 
+			description = "Future date → fail"
+		 )
+	public void testFutureDate() {
+		
+		Map<String, Object> validBody = freshBody();
+		final String futureDate = "25-05-2026";
+		
+		
+		Map<String, Object> documentDetails = (Map<String, Object>) validBody.get("DocDtls");
+		documentDetails.put("Dt", futureDate);
+		
+		ApiClient.negativePostRequest(VALIDATE_PATH, validBody, 400);
+	}
+	
+	@Test(
+			priority = 16, 
+			description = "Negative UnitPrice → fail"
+		 )
+	public void testNegativeUnitPrice() {
+		
+		// Negative UnitPrice → fail
+		
+		Map<String, Object> validBody = freshBody();
+		double unitPrice = -5000;
+		
+		Map<String, Object> itemList = (Map<String, Object>) validBody.get("ItemList");
+		itemList.put("UnitPrice", unitPrice);
+		
+		ApiClient.negativePostRequest(VALIDATE_PATH, validBody, 400);
+	}
+	
+	@Test(
+			priority = 17, 
+			description = "POST/validate → POST/generate chain"
+		 )
+	public void testChain() {
+		
+		// I haven't understood this test what to do here...
+		
+	}
+	
 	
 	
 }

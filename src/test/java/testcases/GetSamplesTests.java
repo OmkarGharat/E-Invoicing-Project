@@ -15,6 +15,7 @@ import org.testng.annotations.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import base.BaseResponse;
+import base.TestBase;
 import io.restassured.response.Response;
 import pojo.Sample;
 import pojo.SamplesResponse;
@@ -22,7 +23,7 @@ import rest.RequestBuilder;
 import utils.ApiClient;
 import utils.StateCodeUtils;
 
-public class GetSamplesTests {
+public class GetSamplesTests extends TestBase {
 
 	private static final Logger log = LoggerFactory.getLogger(GetSamplesTests.class);
 	private static final String INVOICES_PATH = "/api/e-invoice/samples";

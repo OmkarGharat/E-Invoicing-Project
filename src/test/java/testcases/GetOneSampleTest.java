@@ -10,8 +10,10 @@ import static io.restassured.RestAssured.given;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import base.BaseResponse;
+import base.TestBase;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -21,14 +23,18 @@ import pojo.Item;
 import pojo.SamplesResponse;
 import rest.RequestBuilder;
 import utils.ApiClient;
+import utils.GstinValidator;
 import utils.PinValidator;
 import utils.StateCodeUtils;
 
-public class GetOneSampleTest {
+public class GetOneSampleTest extends TestBase {
 
 	private static final String SAMPLE_PATH = "/api/e-invoice/sample/1";
 
-//	@Test(priority = 1, description = "GET api/e-invoice/sample/1 returns 200 and Content-Type is application/json")
+	@Test(
+			priority = 1, 
+			description = "GET api/e-invoice/sample/1 returns 200 and Content-Type is application/json"
+		 )
 	public void testSampleStatusAndContentType() {
 
 		//@formatter:off
@@ -44,7 +50,10 @@ public class GetOneSampleTest {
 		//@formatter:on		
 	}
 
-//	@Test(priority = 5, description = "Verify that the Pin provided in SellerDtls or BuyerDtls matches the corresponding Stcd (State Code) as per India Post master data.")
+	@Test(
+			priority = 5, 
+			description = "Verify that the Pin provided in SellerDtls or BuyerDtls matches the corresponding Stcd (State Code) as per India Post master data."
+		 )
 	public void testPinMatchesWithStateCode() {
 		
 		// This test case is failing ... help me 
@@ -71,7 +80,10 @@ public class GetOneSampleTest {
 		Assert.assertTrue(isPincodeAndStateComboValid, "Invalid PIN-State combinational in Seller details.");
 	}
 
-//	@Test(priority = 6, description = "buyerState and sellerState and Pos (Place of Supply) has value in between 1 to 38 and 96, 97, 99")
+	@Test(
+			priority = 6, 
+			description = "buyerState and sellerState and Pos (Place of Supply) has value in between 1 to 38 and 96, 97, 99"
+		 )
 	public void testValidBuyerSellerAndPosCode() {
 
 		Response response = ApiClient.get(SAMPLE_PATH);
@@ -89,7 +101,10 @@ public class GetOneSampleTest {
 		Assert.assertTrue(isPosCodeValid, "Place Of Supply State Code is Invalid!");
 	}
 
-//	@Test(priority = 7, description = "TotItemVal = AssAmt + CgstAmt + SgstAmt + IgstAmt")
+	@Test(
+			priority = 7, 
+			description = "TotItemVal = AssAmt + CgstAmt + SgstAmt + IgstAmt"
+		 )
 	public void testBuyerSellerDiff() {
 
 		Response response = ApiClient.get(SAMPLE_PATH);
@@ -111,7 +126,10 @@ public class GetOneSampleTest {
 		);
 	}
 
-//	@Test(priority = 8, description = "Amount = Qty * Rate (per item)")
+	@Test(	
+			priority = 8, 
+			description = "Amount = Qty * Rate (per item)"
+		 )
 	public void testAmountEqulsQtyXUnitPrice() {
 		
 		Response response = ApiClient.get(SAMPLE_PATH);
@@ -133,7 +151,10 @@ public class GetOneSampleTest {
 	
 	// Test Case 9 and 10 will be done using JSON Schema Validation
 	
-	@Test(priority = 11, description = "Missing Auth Header Returns 401 Unauthorized.")
+	@Test(	
+			priority = 11, 
+			description = "Missing Auth Header Returns 401 Unauthorized."
+		 )
 	public void testMissingAuthHeaderReturns401() {
 		
 		RestAssured.baseURI = "https://e-invoice-api.vercel.app";
@@ -174,22 +195,66 @@ public class GetOneSampleTest {
 			.statusCode(405);
 	}
 	
-	@Test(priority = 13, description = "")
+	@Test(	priority = 13, 
+			description = ""
+		 )
 	public void testGSTINhasValidFormat() {
 		
+		Response response = ApiClient.get(SAMPLE_PATH);
+		String sellerGSTIN = response.jsonPath().get("SellerDtls.Gstin");
+		
+		// TODO Find the difference between .getMap() vs .getList()
+		
+		Assert.assertTrue(GstinValidator.isValidGstin(sellerGSTIN), sellerGSTIN);
 	}
 	
-	@Test(priority = 14, description = "If SupTyp is B2B, both parties must have regular GSTINs")
+	@Test(	priority = 14, 
+			description = "If SupTyp is B2B, both parties must have regular GSTINs"
+		 )
 	public void testSupplyTypeB2BThenRegularGSTINforBothParties() {
 		
+		Response response = ApiClient.get(SAMPLE_PATH);
 		
+		String supplyType = response.jsonPath().getString("TranDtls.SupTyp");
+		
+		if (supplyType.equals("B2B")) {
+			
+			String sellerGSTIN = response.jsonPath().getString("SellerDtls.Gstin");
+			String buyerGSTIN = response.jsonPath().getString("BuyerDtls.Gstin");
+			
+			if (sellerGSTIN == null || buyerGSTIN == null) {
+			    Assert.fail("Seller or Buyer GSTIN is missing in response!");
+			}
+			
+			// TODO Find the difference between .getMap() vs .getList()
+			// TODO Find the difference between .get() and .getString()
+			
+			SoftAssert softAssert = new SoftAssert();
+			
+			softAssert.assertTrue(GstinValidator.isValidGstin(sellerGSTIN), 
+												"Invalid Seller GSTIN : " + sellerGSTIN);
+			
+			softAssert.assertTrue(GstinValidator.isValidGstin(buyerGSTIN), 
+												"Invalid Buyer GSTIN : " + buyerGSTIN);	
+			
+			softAssert.assertAll();
+			
+		}else {
+			
+			System.out.println("Supply Type is NOT B2B, its " + supplyType + ", cannot proceed.");
+			return;
+		}
 		
 	}
 	
-	@Test(priority = 17, description = "GET /sample/999 → 404 (invalid ID)")
+	@Test(	priority = 17, 
+			description = "GET /sample/999 → 404 (invalid ID)"
+		 )
 	public void testInvalidIdIntegerReturns404() {
 		
+		Response response = ApiClient.get("/api/e-invoice/sample/999");
 		
+		Assert.assertEquals(response.getStatusCode(), 404, "The status code of invalid ID is not 404");
 	}
 	
 	@Test(priority = 18, description = "")

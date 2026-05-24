@@ -43,7 +43,7 @@ public class ApiClient {
 		}
 		  
 	      response.then()
-	        .statusCode(expectedStatus);
+	        	  .statusCode(expectedStatus);
     	
     }
 	
