@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "POST /generate Success Response Schema",
+  "type": "object",
+  "required": [
+    "status",
+    "data",
+    "error",
+    "info"
+  ],
+  "properties": {
+    "status": {
+      "type": "string",
+      "const": "1"
+    },
+    "error": {
+      "type": ["null", "string", "object"]
+    },
+    "info": {
+      "type": ["null", "string", "object"]
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "AckNo",
+        "AckDt",
+        "Irn",
+        "SignedInvoice",
+        "SignedQRCode"
+      ],
+      "properties": {
+        "AckNo": {
+          "type": "string",
+          "pattern": "^\\d+$"
+        },
+        "AckDt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+        },
+        "Irn": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "SignedInvoice": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+$"
+        },
+        "SignedQRCode": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+$"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
