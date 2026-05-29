@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "POST /cancel Success Response Schema",
+  "type": "object",
+  "required": ["success", "message", "data"],
+  "properties": {
+
+    "success": {
+      "type": "boolean",
+      "const": true
+    },
+
+    "message": {
+      "type": "string",
+      "const": "Invoice cancelled successfully"
+    },
+
+    "data": {
+      "type": "object",
+      "required": ["Irn", "status", "cancelledAt", "CnlRsn", "CnlRem"],
+      "properties": {
+
+        "Irn": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+
+        "status": {
+          "type": "string",
+          "const": "Cancelled"
+        },
+
+        "cancelledAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$"
+        },
+
+        "CnlRsn": {
+          "type": "string",
+          "enum": ["1", "2", "3", "4"]
+        },
+
+        "CnlRem": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+
+      },
+      "additionalProperties": false
+    }
+
+  },
+  "additionalProperties": false
+}
