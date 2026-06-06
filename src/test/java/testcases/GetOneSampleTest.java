@@ -56,10 +56,6 @@ public class GetOneSampleTest extends TestBase {
 		 )
 	public void testPinMatchesWithStateCode() {
 		
-		// This test case is failing ... help me 
-		// java.lang.AssertionError: Invalid PIN-State combinational in Seller details. expected [true] but found [false]
-
-
 		Response response = ApiClient.get(SAMPLE_PATH);
 		ApiSingleSampleResponse sampleResponse = response.as(ApiSingleSampleResponse.class);
 
@@ -130,7 +126,7 @@ public class GetOneSampleTest extends TestBase {
 			priority = 8, 
 			description = "Amount = Qty * Rate (per item)"
 		 )
-	public void testAmountEqulsQtyXUnitPrice() {
+	public void testAmountEqualsQtyXUnitPrice() {
 		
 		Response response = ApiClient.get(SAMPLE_PATH);
 		List<Item> payload = response.as(ApiSingleSampleResponse.class).getData().getItemList();
@@ -140,7 +136,7 @@ public class GetOneSampleTest extends TestBase {
 				amount -> {
 					
 					double ActualTotalAmount = amount.getQty() * amount.getUnitPrice();
-					double expectedTotalAmount = amount.getUnitPrice();
+					double expectedTotalAmount = amount.getTotalAmount();
 					
 					Assert.assertEquals(ActualTotalAmount, 
 										expectedTotalAmount, 
@@ -195,19 +191,21 @@ public class GetOneSampleTest extends TestBase {
 			.statusCode(405);
 	}
 	
+	// TODO Fix the invalid Gstin present in the api data like 29AABCT1332L1Z1
 	@Test(	priority = 13, 
 			description = ""
 		 )
 	public void testGSTINhasValidFormat() {
 		
 		Response response = ApiClient.get(SAMPLE_PATH);
-		String sellerGSTIN = response.jsonPath().get("SellerDtls.Gstin");
+		String sellerGSTIN = response.jsonPath().get("data.SellerDtls.Gstin");
 		
 		// TODO Find the difference between .getMap() vs .getList()
 		
-		Assert.assertTrue(GstinValidator.isValidGstin(sellerGSTIN), sellerGSTIN);
+		Assert.assertTrue(GstinValidator.isValidGstin(sellerGSTIN), "The GSTIN : " + sellerGSTIN + " has invalid format.");
 	}
 	
+	@SuppressWarnings("null")
 	@Test(	priority = 14, 
 			description = "If SupTyp is B2B, both parties must have regular GSTINs"
 		 )
@@ -215,14 +213,21 @@ public class GetOneSampleTest extends TestBase {
 		
 		Response response = ApiClient.get(SAMPLE_PATH);
 		
-		String supplyType = response.jsonPath().getString("TranDtls.SupTyp");
+		String supplyType = response.jsonPath().getString("data.TranDtls.SupTyp");
+		
+		if (supplyType == null) {
+			
+			response.prettyPrint();
+			Assert.fail("Supply Type is null, cannot proceed.");
+		}
 		
 		if (supplyType.equals("B2B")) {
 			
-			String sellerGSTIN = response.jsonPath().getString("SellerDtls.Gstin");
-			String buyerGSTIN = response.jsonPath().getString("BuyerDtls.Gstin");
+			String sellerGSTIN = response.jsonPath().getString("data.SellerDtls.Gstin");
+			String buyerGSTIN = response.jsonPath().getString("data.BuyerDtls.Gstin");
 			
 			if (sellerGSTIN == null || buyerGSTIN == null) {
+				
 			    Assert.fail("Seller or Buyer GSTIN is missing in response!");
 			}
 			
@@ -252,16 +257,16 @@ public class GetOneSampleTest extends TestBase {
 		 )
 	public void testInvalidIdIntegerReturns404() {
 		
-		Response response = ApiClient.get("/api/e-invoice/sample/999");
+		Response response = ApiClient.NegativeGet("/api/e-invoice/sample/999", 404);
 		
 		Assert.assertEquals(response.getStatusCode(), 404, "The status code of invalid ID is not 404");
 	}
 	
-	@Test(priority = 18, description = "")
-	public void testInvalidIdStringReturns404() {
-		
-		
-		
-	}
+//	@Test(priority = 18, description = "")
+//	public void testInvalidIdStringReturns404() {
+//		
+//		
+//		
+//	}
 
 }

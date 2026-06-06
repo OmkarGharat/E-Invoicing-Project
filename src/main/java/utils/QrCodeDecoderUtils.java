@@ -8,9 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QrCodeDecoderUtils {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static Map<String, String> decodeStandardGstQr(String qrCodeToken) {
+    	
+    	
         Map<String, String> resultMap = new HashMap<>();
         try {
             // 1. If your mock server uses "SignedQR_", this cleans it up automatically

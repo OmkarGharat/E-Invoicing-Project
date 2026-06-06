@@ -24,6 +24,20 @@ public class ApiClient {
                 		.extract().response();
     }
 	
+	public static Response NegativeGet(String path, int expectedStatusCode) {
+
+		//@formatter:off
+        return given()
+        				.spec(RequestBuilder.getRequest())
+                	
+                .when()
+                		.get(path)
+                	
+                .then()
+                		.statusCode(expectedStatusCode)
+                		.extract().response();
+    }	
+	
 	// NOTE POST request
     public static Response postRequest(String path, Map<String, Object> validBody) {
     	

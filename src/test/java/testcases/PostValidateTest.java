@@ -7,6 +7,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,6 +32,7 @@ import io.restassured.response.Response;
 import lombok.val;
 import pojo.ApiSingleSampleResponse;
 import pojo.EInvoicePayload;
+import pojo.Item;
 import pojo.SamplesResponse;
 import rest.RequestBuilder;
 import utils.ApiClient;
@@ -245,14 +247,6 @@ public class PostValidateTest extends TestBase {
 		sellerDtls.put("Gstin", badValue);
 		
 		// 3. Send and check
-//		
-//		  given()
-//	        .spec(RequestBuilder.createRequest(validBody))
-//	      .when()
-//	        .post(VALIDATE_PATH)
-//	      .then()
-//	        .statusCode(expectedStatus);
-
 		ApiClient.negativePostRequest(VALIDATE_PATH, validBody, expectedStatus);
 	}
 
@@ -286,9 +280,6 @@ public class PostValidateTest extends TestBase {
 
 		Map<String, Object> validBody = freshBody();
 
-//		Response sampleResponse = ApiClient.get(SAMPLE_PATH);
-//		Map<String, Object> validBody = sampleResponse.jsonPath().getMap("data");
-		
 		Map<String, Object> valDtls = (Map<String, Object>) validBody.get("ValDtls");
 		valDtls.put("TotInvVal", badValue);
 		
@@ -410,7 +401,7 @@ public class PostValidateTest extends TestBase {
 		
 		Assert.assertEquals(
 							 sellerGSTIN.substring(0, 2), 
-							 KARNATAKA, 
+							 String.valueOf(KARNATAKA), 
 							 "Pincode and StateCode doesn't match with each other."
 						   );
 	}
@@ -452,29 +443,29 @@ public class PostValidateTest extends TestBase {
 			priority = 16, 
 			description = "Negative UnitPrice → fail"
 		 )
-	public void testNegativeUnitPrice() {
+	public void testNegativeUnitPrice() throws JsonProcessingException {
 		
 		// Negative UnitPrice → fail
 		
 		Map<String, Object> validBody = freshBody();
 		double unitPrice = -5000;
 		
-		Map<String, Object> itemList = (Map<String, Object>) validBody.get("ItemList");
-		itemList.put("UnitPrice", unitPrice);
+		List<Map<String, Object>> itemsList = (List<Map<String, Object>>) validBody.get("ItemList");
+		
+		Map<String, Object> firstItem = itemsList.get(0);
+		firstItem.put("UnitPrice", unitPrice);
 		
 		ApiClient.negativePostRequest(VALIDATE_PATH, validBody, 400);
 	}
 	
-	@Test(
-			priority = 17, 
-			description = "POST/validate → POST/generate chain"
-		 )
-	public void testChain() {
-		
-		// I haven't understood this test what to do here...
-		
-	}
-	
-	
+//	@Test(
+//			priority = 17, 
+//			description = "POST/validate → POST/generate chain"
+//		 )
+//	public void testChain() {
+//		
+//		// I haven't understood this test what to do here...
+//		
+//	}
 	
 }

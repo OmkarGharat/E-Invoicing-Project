@@ -69,6 +69,9 @@ public class POSTCancelTest extends TestBase {
 	// ─── HELPER ────────────────────────────────────────────────────────────────
 
 	private Map<String, Object> cancelBody() {
+		
+		Assert.assertNotNull(freshIrn, "freshIrn was not set by @BeforeClass — setup failed");
+		
 		Map<String, Object> body = new HashMap<>();
 		body.put("Irn",    freshIrn);
 		body.put("CnlRsn", "1");
@@ -106,12 +109,15 @@ public class POSTCancelTest extends TestBase {
 		            + "status=Cancelled, and cancelledAt is a valid ISO 8601 timestamp."
 	)
 	public void testSuccessfulCancellationOfInvoice() {
+		
+		Assert.assertNotNull(freshIrn, "freshIrn was not set by @BeforeClass — setup failed");
 
 		//@formatter:off
 		Response response = given()
-			.spec(RequestBuilder.createRequest(cancelBody()))
-		.when()
-			.post(CANCEL_PATH);
+								.spec(RequestBuilder.createRequest(cancelBody()))
+								
+							.when()
+								.post(CANCEL_PATH);
 
 		response.then()
 			.spec(BaseResponse.get200Spec())
@@ -137,17 +143,25 @@ public class POSTCancelTest extends TestBase {
 		// Skipping is better than a misleading assertion failure.
 	)
 	public void testAfterCancellationOfInvoice() {
+		
+		Assert.assertNotNull(freshIrn, "freshIrn was not set by @BeforeClass — setup failed");
 
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("irn", freshIrn);
 
 		Response response = ApiClient.get(INVOICE_PATH, queryParams);
+		
+		Assert.assertEquals(
+								response.jsonPath().getString("data.irn"), 
+								freshIrn, 
+								"The data.irn is not the irn that we cancelled."
+						   );
 
 		Assert.assertEquals(
-			response.jsonPath().getString("data[0].status"),
-			"Cancelled",
-			"Expected the cancelled invoice to show status=Cancelled in the invoices list"
-		);
+								response.jsonPath().getString("data.status"),
+								"Cancelled",
+								"Expected the cancelled invoice to show status=Cancelled in the invoices list"
+						   );
 	}
 
 	@Test(
@@ -156,6 +170,8 @@ public class POSTCancelTest extends TestBase {
 		            + "Uses cancelledIrn pre-cancelled in @BeforeClass."
 	)
 	public void testCancellingSameInvoiceTwice() {
+		
+		Assert.assertNotNull(cancelledIrn, "cancelledIrn was not set by @BeforeClass — setup failed");
 
 		Map<String, Object> body = new HashMap<>();
 		body.put("Irn",    cancelledIrn);
@@ -163,22 +179,26 @@ public class POSTCancelTest extends TestBase {
 		body.put("CnlRem", "Duplicate invoice entry");
 
 		//@formatter:off
-		given()
-			.spec(RequestBuilder.createRequest(body))
-
-		.when()
-			.post(CANCEL_PATH)
-
-		.then()
-			.statusCode(409)
-			.body("success", equalTo(Boolean.FALSE))
-			.body("message", equalTo("Invoice is already cancelled"))
-			.body("error",   equalTo("Conflict: This invoice has already been cancelled"))
-			.body("data.status",      equalTo("Cancelled"))
-			.body("data.cancelledAt", notNullValue())
-			.body("data.CnlRsn",      equalTo("1"))
-			// The API echoes back the ORIGINAL cancellation data from @BeforeClass, not what we sent now
-			.body("data.CnlRem",      equalTo("Setup: pre-cancelled for double-cancel test"));
+		Response response = given()
+								.spec(RequestBuilder.createRequest(body))
+					
+							.when()
+								.post(CANCEL_PATH);
+		
+		response.then()
+					.statusCode(409)
+					.body("success", equalTo(Boolean.FALSE))
+					.body("message", equalTo("Invoice is already cancelled"))
+					.body("error",   equalTo("Conflict: This invoice has already been cancelled"))
+					.body("data.status",      equalTo("Cancelled"))
+					.body("data.cancelledAt", notNullValue())
+					.body("data.CnlRsn",      equalTo("1"))
+					
+					// The API echoes back the ORIGINAL cancellation data from @BeforeClass, not what we sent now
+					.body("data.CnlRem",      equalTo("Setup: pre-cancelled for double-cancel test"));
+		
+		String cancelledAt = response.jsonPath().getString("data.cancelledAt");
+		DateTimeUtils.assertValidISO8601(cancelledAt);
 		//@formatter:on
 	}
 
@@ -298,6 +318,8 @@ public class POSTCancelTest extends TestBase {
 		description = "CnlRsn = '0' (below valid range 1-4) returns 400."
 	)
 	public void testInvalidCnlRsnBelowRangeReturns400() {
+		
+		Assert.assertNotNull(freshIrn, "freshIrn was not set by @BeforeClass — setup failed");
 
 		Map<String, Object> body = new HashMap<>();
 		body.put("Irn",    freshIrn);
@@ -322,6 +344,8 @@ public class POSTCancelTest extends TestBase {
 		description = "CnlRsn = '5' (above valid range 1-4) returns 400."
 	)
 	public void testInvalidCnlRsnAboveRangeReturns400() {
+		
+		Assert.assertNotNull(freshIrn, "freshIrn was not set by @BeforeClass — setup failed");
 
 		Map<String, Object> body = new HashMap<>();
 		body.put("Irn",    freshIrn);
@@ -346,6 +370,8 @@ public class POSTCancelTest extends TestBase {
 		description = "Null CnlRem returns 400: explicit null is treated the same as absent by the API."
 	)
 	public void testNullCnlRemReturns400() {
+		
+		Assert.assertNotNull(freshIrn, "freshIrn was not set by @BeforeClass — setup failed");
 
 		Map<String, Object> body = new HashMap<>();
 		body.put("Irn",    freshIrn);
@@ -370,9 +396,11 @@ public class POSTCancelTest extends TestBase {
 		description = "CnlRem with 101 characters (one over the 100-char limit) returns 400."
 	)
 	public void testCnlRemExceedsMaxLengthReturns400() {
+		
+		Assert.assertNotNull(freshIrn, "freshIrn was not set by @BeforeClass — setup failed");
 
 		String longRemark = "A".repeat(101);
-
+		
 		Map<String, Object> body = new HashMap<>();
 		body.put("Irn",    freshIrn);
 		body.put("CnlRsn", "1");
